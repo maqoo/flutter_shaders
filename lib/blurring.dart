@@ -1,5 +1,6 @@
 import 'dart:ui' as ui;
 
+import 'package:vector_math/vector_math_64.dart' as vector;
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
@@ -35,7 +36,7 @@ class BlurringPageState extends State<BlurringPage> {
               child: ClipRect(
                 child: BackdropFilter(
                   key: Key('$index'),
-                  filter: ui.ImageFilter.blur(sigmaY: 1.0 * index, sigmaX: 1.0 * index),
+                  filter: ui.ImageFilter.matrix(vector.Matrix4.diagonal3(vector.Vector3.all(index * 0.1)).storage),
                   child: Container(
                     height: height,
                     color: Colors.grey.shade200.withOpacity(0),
