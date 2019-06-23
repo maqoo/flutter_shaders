@@ -1,8 +1,9 @@
+import 'dart:math';
 import 'dart:ui' as ui;
 
-import 'package:vector_math/vector_math_64.dart' as vector;
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:vector_math/vector_math_64.dart' as vector;
 
 class BlurringPage extends StatefulWidget {
   @override
@@ -36,10 +37,11 @@ class BlurringPageState extends State<BlurringPage> {
               child: ClipRect(
                 child: BackdropFilter(
                   key: Key('$index'),
-                  filter: ui.ImageFilter.matrix(vector.Matrix4.diagonal3(vector.Vector3.all(index * 0.1)).storage),
+                  filter: ui.ImageFilter.matrix(
+                      vector.Matrix4.rotationZ(index * pi / 180.0 * 3).storage),
                   child: Container(
                     height: height,
-                    color: Colors.grey.shade200.withOpacity(0),
+                    color: Colors.grey.shade200.withOpacity(0.5),
                   ),
                 ),
               ),
@@ -67,12 +69,12 @@ class BlurringPageState extends State<BlurringPage> {
       );
 
   Widget get _text => Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Text(
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-      style: Theme.of(context).textTheme.title,
-    ),
-  );
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+          style: Theme.of(context).textTheme.title,
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
