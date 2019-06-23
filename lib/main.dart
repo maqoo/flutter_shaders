@@ -38,15 +38,15 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            _buttonWithTitle(context, title: 'Blurring', onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => BlurringPage()));
+            }),
+            const SizedBox(height: 16),
             _buttonWithTitle(context, title: 'Masking', onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) => MaskingPage()));
             }),
-            const SizedBox(height: 16),
-            _buttonWithTitle(context, title: 'Blur', onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => BlurringPage()));
-            })
           ],
         ),
       ),
