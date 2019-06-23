@@ -1,4 +1,7 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 
 class BlurringPage extends StatefulWidget {
   @override
@@ -8,25 +11,67 @@ class BlurringPage extends StatefulWidget {
 class BlurringPageState extends State<BlurringPage> {
   Widget get _background => Container(
         decoration: BoxDecoration(
-          gradient: RadialGradient(
-            radius: 0.8,
-            colors: <Color>[Colors.limeAccent, Colors.deepOrangeAccent],
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: <Color>[
+              Colors.limeAccent,
+              Colors.deepOrangeAccent,
+              Colors.blue,
+              Colors.green
+            ],
           ),
         ),
       );
 
-  Widget get _list => ListView.builder(
+  Widget _listElement(int index, {double height = 40}) => Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Stack(
+          children: <Widget>[
+            Container(
+              height: height,
+            ),
+            Center(
+              child: ClipRect(
+                child: BackdropFilter(
+                  key: Key('$index'),
+                  filter: ui.ImageFilter.blur(sigmaY: 1.0 * index, sigmaX: 1.0 * index),
+                  child: Container(
+                    height: height,
+                    color: Colors.grey.shade200.withOpacity(0),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+
+  Widget get _listView => ListView.builder(
         itemCount: 10,
         itemBuilder: (BuildContext context, int index) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-                width: 100,
-                height: 28,
-                color: Colors.red),
-          );
+          return _listElement(index);
         },
       );
+
+  Widget get _list => NotificationListener(
+        onNotification: (Notification notification) {
+          if (notification is ScrollUpdateNotification) {
+            setState(() {});
+          }
+
+          return true;
+        },
+        child: _listView,
+      );
+
+  Widget get _text => Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Text(
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+      style: Theme.of(context).textTheme.title,
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +80,11 @@ class BlurringPageState extends State<BlurringPage> {
         title: Text('Blurring'),
       ),
       body: Stack(
-        children: <Widget>[_background, _list],
+        children: <Widget>[
+          _background,
+          _text,
+          _list,
+        ],
       ),
     );
   }
