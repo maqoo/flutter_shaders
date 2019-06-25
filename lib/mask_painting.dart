@@ -12,11 +12,13 @@ class MaskPainting extends SingleChildRenderObjectWidget {
   final ui.Image image;
 
   @override
-  RenderObject createRenderObject(BuildContext context) => MaskPaintingFilter(image);
+  RenderObject createRenderObject(BuildContext context) =>
+      MaskPaintingFilter(image);
 }
 
 class MaskPaintingFilter extends rendering.RenderProxyBox {
-  MaskPaintingFilter(this.image) : _maskPaint = Paint()..blendMode = BlendMode.srcIn;
+  MaskPaintingFilter(this.image)
+      : _maskPaint = Paint()..blendMode = BlendMode.overlay;
 
   final Paint _clearPaint = Paint();
   final Paint _maskPaint;
@@ -36,10 +38,14 @@ class MaskPaintingFilter extends rendering.RenderProxyBox {
     _maskPaint.shader = ImageShader(
         image, TileMode.clamp, TileMode.clamp, Matrix4.identity().storage);
 
-//    _maskPaint.shader = SweepGradient(colors: <Color>[Colors.white, Colors.black], tileMode: TileMode.repeated).createShader(rect);
+//    _maskPaint.shader = SweepGradient(
+//            colors: <Color>[Colors.transparent, Colors.black],
+//            tileMode: TileMode.repeated)
+//        .createShader(rect);
 
     context.canvas.saveLayer(rect, _clearPaint);
     context.paintChild(child, offset);
+//    context.canvas.scale(0.5, 0.5);
     context.canvas.drawRect(rect, _maskPaint);
     context.canvas.restore();
   }

@@ -1,8 +1,5 @@
-import 'dart:async';
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
-import 'package:flutter_shaders/mask_painting.dart';
+import 'package:flutter_shaders/list.dart';
 
 class MaskingPage extends StatefulWidget {
   @override
@@ -11,8 +8,7 @@ class MaskingPage extends StatefulWidget {
 
 class MaskingPageState extends State<MaskingPage> {
   Widget get _background => Container(
-        width: 400,
-        height: 400,
+        constraints: BoxConstraints.expand(),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -33,39 +29,35 @@ class MaskingPageState extends State<MaskingPage> {
       appBar: AppBar(
         title: Text('Masking'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            FutureBuilder<ui.Image>(
-              future: _getAssetImage('assets/images/mask.png'),
-              builder:
-                  (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
-                if (snapshot.hasData) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.done:
-                      return MaskPainting(_background, image: snapshot.data);
-                    default:
-                      return SizedBox.shrink();
-                  }
-                }
-
-                return SizedBox.shrink();
-              },
-            )
-          ],
-        ),
+      body: Stack(
+        children: <Widget>[_background, _stickyHeaderMaskedList(context)],
       ),
     );
   }
 
-  Future<ui.Image> _getAssetImage(String assetPath) {
-    Completer<ui.Image> completer = new Completer<ui.Image>();
-
-    new AssetImage(assetPath).resolve(new ImageConfiguration()).addListener(
-        ImageStreamListener(
-            (ImageInfo info, bool _) => completer.complete(info.image)));
-
-    return completer.future;
-  }
+  Widget _stickyHeaderMaskedList(BuildContext context) =>
+      StickyHeaderMaskedList(
+        sectionCount: 10,
+        sectionHeaderBuilder: (BuildContext context, int sectionIndex) {
+          return Container(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text('Header $sectionIndex'),
+            ),
+          );
+        },
+        elementBuilder:
+            (BuildContext context, int sectionIndex, int elementIndex) {
+          return Container(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text(
+                'Item $elementIndex',
+                style: TextStyle(color: Colors.indigo),
+              ),
+            ),
+          );
+        },
+        sectionItemsCountHandler: (int _) => 5,
+      );
 }
