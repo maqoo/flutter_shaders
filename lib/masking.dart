@@ -48,16 +48,36 @@ class MaskingPageState extends State<MaskingPage> {
         },
         elementBuilder:
             (BuildContext context, int sectionIndex, int elementIndex) {
-          return Container(
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Text(
-                'Item $elementIndex',
-                style: TextStyle(color: Colors.indigo),
+          return ClipPath(
+            clipper: Clipper(),
+            child: Container(
+              color: Colors.cyan,
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Text(
+                  'Item $elementIndex',
+                  style: TextStyle(color: Colors.indigo),
+                ),
               ),
             ),
           );
         },
         sectionItemsCountHandler: (int _) => 5,
       );
+}
+
+class Clipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+
+    path.moveTo(0, 0);
+//    path.addRect(Rect.fromLTWH(10, 10, size.width - 20, size.height - 20));
+    path.addOval(Rect.fromLTWH(10, 10, size.width - 20, size.height - 20));
+    
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => true;
 }
